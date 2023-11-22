@@ -1,0 +1,7 @@
+export const EXPENSE_CATEGORIES = [
+  "FOOD_DRINKS",
+  "SHOPPING",
+  "HOUSING",
+  "TRANSPORTATION",
+  "VEHICLE",
+];
