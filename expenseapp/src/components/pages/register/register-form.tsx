@@ -1,16 +1,19 @@
 import FacebookAuth from "@/components/shared/Auth/facebook-auth";
 import GoogleAuth from "@/components/shared/Auth/google-auth";
 import fetcher from "@/lib/utils/fetcher";
+import { setUser } from "@/redux/user/user.slice";
 import { TRegister, registerSchema } from "@/schema/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
-  const [error, setError] = useState<unknown>(null);
+  // const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -29,6 +32,7 @@ function LoginForm() {
         password: data.password,
       });
       if (response?.status === 201) {
+        dispatch(setUser(response?.data?.data?.user));
         navigate("/");
       }
     } catch (err: unknown) {
@@ -46,8 +50,8 @@ function LoginForm() {
           {...register("name")}
           isInvalid={errors?.name?.message ? true : false}
           errorMessage={errors?.name?.message}
-          label="Email"
-          placeholder="foo@gmail.com"
+          label="Name"
+          placeholder="John Doe"
           labelPlacement="outside"
           size="lg"
           classNames={{
@@ -114,6 +118,8 @@ function LoginForm() {
           type="submit"
           fullWidth
           size="lg"
+          isLoading={loading}
+          disabled={loading}
         >
           SIGN UP
         </Button>

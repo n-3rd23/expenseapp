@@ -1,7 +1,14 @@
+import {
+  EXPENSE_CATEGORIES,
+  EXPENSE_CATEGORIES_ARRAY,
+} from "@/constants/expense-categories";
+import fetcher from "@/lib/utils/fetcher";
 import { TAddExpense, addExpenseSchema } from "@/schema/add-expense.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 function AddExpenseFrom() {
   const {
@@ -12,20 +19,27 @@ function AddExpenseFrom() {
     resolver: zodResolver(addExpenseSchema),
     mode: "onChange",
   });
-
-  const EXPENSES = [
-    {
-      value: "GROCERY",
-      label: "grocery",
-    },
-    {
-      value: "FOOD_DRINKS",
-      label: "food",
-    },
-  ];
-
-  const onSubmit: SubmitHandler<TAddExpense> = (value) => {
-    console.log(value);
+  const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<unknown>(null);
+  // const [data, setData] = useState<unknown>(null);
+  const navigate = useNavigate();
+  const onSubmit: SubmitHandler<TAddExpense> = async (value) => {
+    try {
+      setLoading(true);
+      const response = await fetcher.post("/expenses", {
+        expense_category: value.expenseCategory,
+        expense: value.expense,
+        date: new Date(value.date),
+        amount: value.amount,
+      });
+      if (response?.status === 201) {
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,9 +59,9 @@ function AddExpenseFrom() {
               trigger: "bg-white border",
             }}
           >
-            {EXPENSES.map((animal) => (
-              <SelectItem key={animal.value} value={animal.value}>
-                {animal.label}
+            {EXPENSE_CATEGORIES_ARRAY.map((item) => (
+              <SelectItem key={item} value={item}>
+                {EXPENSE_CATEGORIES[item]}
               </SelectItem>
             ))}
           </Select>
@@ -107,7 +121,15 @@ function AddExpenseFrom() {
           />
         </div>
         <div className="mt-5">
-          <Button type="submit" color="primary" className="w-full" size="lg">
+          <Button
+            type="submit"
+            color="primary"
+            className="w-full"
+            size="lg"
+            disableAnimation={loading}
+            disabled={loading}
+            isLoading={loading}
+          >
             Submit
           </Button>
         </div>

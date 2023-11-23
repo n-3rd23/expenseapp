@@ -1,15 +1,33 @@
+import { RootState } from "@/redux/store";
 import { Avatar } from "@nextui-org/react";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 
 function Nav() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const location = useLocation();
-
+  const user = useSelector((state: RootState) => state.user);
+  // console.log("Sidebar user : ", user);
+  // const dispatch = useDispatch();
+  // const getUser = async () => {
+  //   try {
+  //     const response = await fetcher.get("/auth/user");
+  //     if (response.status === 200) {
+  //       dispatch(setUser(response.data?.data));
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
   useEffect(() => {
     setIsNavOpen(false);
   }, [location.pathname]);
+
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
 
   return (
     <>
@@ -61,9 +79,9 @@ function Nav() {
             </div>
             <div>
               <h1 className="font-semibold text-3xl text-white mt-3">
-                John Doe
+                {user?.name}
               </h1>
-              <div className="text-sm text-gray-400">johndoe@email.com</div>
+              <div className="text-sm text-gray-400">{user?.email}</div>
             </div>
           </div>
           <ul className="space-y-2 font-medium mt-16">

@@ -4,6 +4,7 @@ import { validator } from "../../middleware/validation.middleware";
 import {
   addExpense,
   deleteExpense,
+  getExpenseGraphData,
   getExpenseSummary,
   getExpenses,
 } from "../../controller/expenses";
@@ -25,3 +26,5 @@ router.route("/summary").get(authMiddleware, getExpenseSummary);
 router
   .route("/:expenseId")
   .delete(authMiddleware, deleteExpenseValidator, validator, deleteExpense);
+
+router.route("/graph-data").get(authMiddleware, getExpenseGraphData);

@@ -5,9 +5,7 @@ import { query } from "express";
 export const addExpenseValidator = [
   body("expense_category").notEmpty().isString().isIn(EXPENSE_CATEGORIES),
   body("expense").isString(),
-  body("date").isDate({
-    format: "yyyy-mm-dd",
-  }),
+  body("date").isString(),
   body("amount").isNumeric().notEmpty(),
 ];
 

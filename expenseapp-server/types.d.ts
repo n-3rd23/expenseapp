@@ -5,6 +5,10 @@ declare namespace Express {
       name: string;
       id: string;
     };
+    googleData: {
+      name: string;
+      email: string;
+    };
   }
   export interface Response {
     user: any;

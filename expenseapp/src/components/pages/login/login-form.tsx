@@ -7,12 +7,14 @@ import { Button, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/user/user.slice";
 
 function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>(null);
-  const [responseDate, setResponseData] = useState<unknown>(null);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -22,6 +24,7 @@ function LoginForm() {
     mode: "onChange",
   });
   console.log(errors);
+  console.log(error);
   const onSubmit: SubmitHandler<TLogin> = async (data) => {
     try {
       const response = await fetcher.post("/auth/login", {
@@ -31,7 +34,7 @@ function LoginForm() {
       if (response?.status === 200) {
         console.log("success");
         setIsLoading(false);
-        setResponseData(response?.data?.data);
+        dispatch(setUser(response?.data?.data?.user));
         navigate("/");
       }
     } catch (err) {

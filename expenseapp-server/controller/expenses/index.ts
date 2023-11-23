@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { ErrorResponse } from "../../util/ErrorResponse";
-import { ExpenseModel } from "../../db/models/expenses.model";
 import mongoose from "mongoose";
+import { ExpenseModel } from "../../db/models/expenses.model";
+import { ErrorResponse } from "../../util/ErrorResponse";
+import { getFirstLastDate } from "../../util/util";
 
 export const addExpense = async (
   req: Request,
@@ -76,16 +77,27 @@ export const getExpenseSummary = async (
 ) => {
   try {
     const userId = req.user.id;
+    const { firstDate, lastDate } = getFirstLastDate(new Date());
     const expenseSummary = await ExpenseModel.aggregate([
       {
         $match: {
           createdBy: new mongoose.Types.ObjectId(userId),
+          date: {
+            $gte: firstDate,
+            $lte: lastDate,
+          },
         },
       },
       {
         $group: {
           _id: "$expense_category",
           count: { $sum: 1 },
+          totalSpending: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
         },
       },
     ]);
@@ -94,6 +106,50 @@ export const getExpenseSummary = async (
     });
   } catch (err: any) {
     console.log("error while getting expense summary", err);
+    next(new ErrorResponse(err, 500));
+  }
+};
+
+export const getExpenseGraphData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user.id;
+    console.log("user id : ", userId);
+    const { firstDate, lastDate } = getFirstLastDate(new Date());
+    const graphData = await ExpenseModel.aggregate([
+      {
+        $match: {
+          createdBy: new mongoose.Types.ObjectId(userId),
+          date: {
+            $gte: firstDate,
+            $lte: lastDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$date" },
+            month: { $month: "$date" },
+          },
+          totalExpense: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: {
+          year: 1,
+          month: 1,
+        },
+      },
+    ]);
+    return res.status(200).json({
+      data: graphData,
+    });
+  } catch (err: any) {
+    console.log("error on getting graph data : ", err);
     next(new ErrorResponse(err, 500));
   }
 };

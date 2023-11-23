@@ -1,9 +1,9 @@
-import ExpenseChart from "@/components/pages/home/expense-chart";
 import ExpenseList from "@/components/pages/home/expense-list";
 import { MONTHS } from "@/constants/months.constant";
 import fetcher from "@/lib/utils/fetcher";
 import { Avatar, AvatarGroup } from "@nextui-org/react";
 import { useEffect } from "react";
+import ChartImg from "@/assets/chart.png";
 
 const CURRENT_DATE = new Date();
 
@@ -35,7 +35,10 @@ function Home() {
         } ${CURRENT_DATE.getFullYear()}`}</div>
       </div>
       <div className="mt-10">
-        <ExpenseChart />
+        {/* 
+          // TODO: replace it with chart
+         */}
+        <img src={ChartImg} alt="chart" className="w-full" />
       </div>
       <div className="mt-10">
         <ExpenseList />
