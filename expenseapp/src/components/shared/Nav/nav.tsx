@@ -1,23 +1,22 @@
 import fetcher from "@/lib/utils/fetcher";
-import { RootState } from "@/redux/store";
-import { setUser } from "@/redux/user/user.slice";
 import { Avatar } from "@nextui-org/react";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 
 function Nav() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
+  const [user, setUser] = useState<unknown>(null);
   const location = useLocation();
-  const user = useSelector((state: RootState) => state.user);
+  // const user = useSelector((state: RootState) => state.user);
   // console.log("Sidebar user : ", user);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const getUser = async () => {
     try {
       const response = await fetcher.get("/auth/user");
       if (response.status === 200) {
-        dispatch(setUser(response.data?.data));
+        // dispatch(setUser(response.data?.data));
+        setUser(response.data?.data);
       }
     } catch (err) {
       console.log(err);
