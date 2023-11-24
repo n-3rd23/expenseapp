@@ -1,8 +1,10 @@
+import fetcher from "@/lib/utils/fetcher";
 import { RootState } from "@/redux/store";
+import { setUser } from "@/redux/user/user.slice";
 import { Avatar } from "@nextui-org/react";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 
 function Nav() {
@@ -10,24 +12,24 @@ function Nav() {
   const location = useLocation();
   const user = useSelector((state: RootState) => state.user);
   // console.log("Sidebar user : ", user);
-  // const dispatch = useDispatch();
-  // const getUser = async () => {
-  //   try {
-  //     const response = await fetcher.get("/auth/user");
-  //     if (response.status === 200) {
-  //       dispatch(setUser(response.data?.data));
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const dispatch = useDispatch();
+  const getUser = async () => {
+    try {
+      const response = await fetcher.get("/auth/user");
+      if (response.status === 200) {
+        dispatch(setUser(response.data?.data));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
     setIsNavOpen(false);
   }, [location.pathname]);
 
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <>
