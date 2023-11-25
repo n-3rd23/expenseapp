@@ -22,6 +22,7 @@ function Nav() {
         navigate("/register");
       }
     } catch (err) {
+      navigate("/register");
       console.log(err);
     }
   };
