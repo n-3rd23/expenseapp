@@ -2,12 +2,13 @@ import fetcher from "@/lib/utils/fetcher";
 import { Avatar } from "@nextui-org/react";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function Nav() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [user, setUser] = useState<unknown>(null);
   const location = useLocation();
+  const navigate = useNavigate();
   // const user = useSelector((state: RootState) => state.user);
   // console.log("Sidebar user : ", user);
   // const dispatch = useDispatch();
@@ -17,6 +18,8 @@ function Nav() {
       if (response.status === 200) {
         // dispatch(setUser(response.data?.data));
         setUser(response.data?.data);
+      } else {
+        navigate("/register");
       }
     } catch (err) {
       console.log(err);

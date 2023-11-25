@@ -14,18 +14,19 @@ fetcher.interceptors.response.use(
       prevRequest.sent = true;
       return fetcher(prevRequest);
     }
-    if (error?.response?.status === 401 && !prevRequest?.sent) {
+    if (error?.response?.status === 401) {
+      console.log("got error");
+      window.location.replace("/login");
       prevRequest.sent = true;
       localStorage.removeItem("expense_user");
-      // window.location.replace("/login");
-      window.location.href = "/login";
+      // window.location.href = "/login";
       return fetcher(prevRequest);
     }
 
     if (error?.response?.status === 403) {
       localStorage.removeItem("expense_user");
-      // window.location.replace("/login");
-      window.location.href = "/login";
+      window.location.replace("/login");
+      // window.location.href = "/login";
     }
 
     return Promise.reject(error);
